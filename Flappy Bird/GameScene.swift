@@ -16,9 +16,13 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         
+        Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(self.addPipesWithAnimation), userInfo: nil, repeats: true)
+        
         addBackgroundWithAnimation()
         addBirdWithAnimation()
         addGround()
+        //addPipesWithAnimation()
+        
         
     }
     
@@ -83,6 +87,37 @@ class GameScene: SKScene {
         
     }
     
+    func addPipesWithAnimation() {
+        
+        let movePipes = SKAction.move(by: CGVector(dx: -2 * self.frame.width, dy: 0), duration: TimeInterval(self.frame.width / 100))
+        let removePipes = SKAction.removeFromParent()
+        let moveAndRemovePipes = SKAction.sequence([movePipes, removePipes])
+        
+        let gapHeight = bird.size.height * 4
+        let movementAmount = arc4random() % UInt32(self.frame.height / 2)
+        let pipeOffset = CGFloat(movementAmount) - self.frame.height / 4
+        
+        let pipe1Texture = SKTexture(imageNamed: "pipe1")
+        let pipe1 = SKSpriteNode(texture: pipe1Texture)
+        
+        pipe1.position = CGPoint(x: self.frame.midX + self.frame.width, y: self.frame.midY + pipe1Texture.size().height / 2 + gapHeight / 2 + pipeOffset)
+        
+        pipe1.run(moveAndRemovePipes)
+        
+        self.addChild(pipe1)
+        
+        
+        
+        let pipe2Texture = SKTexture(imageNamed: "pipe2")
+        let pipe2 = SKSpriteNode(texture: pipe2Texture)
+        
+        pipe2.position = CGPoint(x: self.frame.midX + self.frame.width, y: self.frame.midY - pipe2Texture.size().height / 2 - gapHeight / 2 + pipeOffset)
+        
+        pipe2.run(moveAndRemovePipes)
+        
+        self.addChild(pipe2)
+        
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
